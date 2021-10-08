@@ -1,0 +1,4 @@
+---
+relay_boards:
+  - {ip: "192.168.1.30", name: relay_board_1}
+  - {ip: "192.168.1.31", name: relay_board_2}

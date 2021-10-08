@@ -10,10 +10,12 @@ https://es.aliexpress.com/item/4000120026245.html
 
 
 ### usage:
-- command topic:
-set relay 1:
-iot/relay_board_1/1/state/set -> "ON" or "OFF"
 
-- state topic:
+####command topic:
+set relay 1:
+- iot/relay_board_1/1/state/set -> "ON" or "OFF"
+
+
+####state topic:
 read relay 2:
-iot/relay_board_1/2/state -> "ON" or "OFF"
+- iot/relay_board_1/2/state -> "ON" or "OFF"
