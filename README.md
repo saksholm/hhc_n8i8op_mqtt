@@ -5,8 +5,11 @@ https://es.aliexpress.com/item/4000120026245.html
 
 
 # modified version setup:
-- rename default_config.yaml to config.yaml and change values
-- rename default_inventory.yaml to inventory.yaml and config values
+run 'python3 setup.py' or:
+- rename default_config.yaml to config.yaml
+- rename default_inventory.yaml to inventory.yaml
+
+change values of config and inventory files
 
 
 ### usage:
