@@ -1,43 +1,46 @@
 #!/usr/bin/python3
-# Following subset of Homie
-#  https://homieiot.github.io/
+# Heavily modified for my own purposes (c) Joni Saksholm <joni@saksholm.fi>
 #
-#
+# based on https://github.com/gabrielgbs97/hhc_n8i8op_mqtt
+
 import paho.mqtt.client as mqtt
-import time, re, socket, yaml
+import time, re, socket, yaml, sys
 from _thread import start_new_thread
 
+config = yaml.safe_load(open("config.yaml"))
+
 POLLING_WAIT=5
-SOCKET_TIMEOUT= 3#seconds
+SOCKET_TIMEOUT= 10#seconds
+
 UDP_PORT=5000
 INVENTORY_FILE="./inventory.yaml"
 ON="ON"
 OFF="OFF"
-BASE_TOPIC="homie/" # I only support a 1-level base topic (NOT homie/whatever)
-BASE_RELAY_NAME="rele_" #example, rele_3
-STATE_TOPIC_NAME="estado"
+BASE_TOPIC="iot/"
+STATE_TOPIC_NAME="state"
 RE_INT=re.compile("[0-9]+")
 READ_CMD="read"
 inventory={}
+
+
+## mqtt configs from config.yaml
+MQTT_HOST=config["mqtt"]["host"]
+MQTT_USER=config["mqtt"]["username"]
+MQTT_PASS=config["mqtt"]["password"]
+MQTT_DEBUG=config["mqtt"]["debug"]
+MQTT_CLIENT_ID=config["mqtt"]["client_id"]
+
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     global inventory
     print("Connected with result code "+str(rc))
-    # Subscribing in on_connect() means that if we lose the connection and
-    # reconnect then subscriptions will be renewed.
-    ################git pull
-    # ### 
-    ## Placa relés X ## 
-    ###################
-    # Cada relé podrá operarse (placa 1, relé 1) con:
-    # homie/placa_reles_1/rele_1/estado/set -> ("ON" o "OFF")
-    # Luego, la RBPi transmitirá el feedback al cambiar el estado del relé:
-    # homie/placa_reles_1/rele_1/estado <- "ON" o "OFF"
+
     if not inventory:
         inventory=load_inventory()
     # Subscribe or resub to relay boards topics
     for relay_board in inventory['relay_boards']:
-        topic_str=BASE_TOPIC+relay_board['name']+"/+/estado/set"
+        # subscribes all channels (+)
+        topic_str=BASE_TOPIC+relay_board['name']+"/+/"+STATE_TOPIC_NAME+"/set"
         client.subscribe(topic_str)
         print("SUBSCRIBED TO: ", topic_str)
     # example: client.subscribe("homie/+/+/estado/set")
@@ -89,7 +92,8 @@ def on_message(client, userdata, msg):
     global inventory
     topic_str=msg.topic
     msg_str=str(msg.payload.decode())
-    print("Received message on "+topic_str+" "+msg_str)
+    if(MQTT_DEBUG):
+        print("Received message on "+topic_str+" "+msg_str)
     splitted_topic = str(msg.topic).split("/")
     # Find relay of topic in inventory and send command
     for relay_board in inventory['relay_boards']:
@@ -113,13 +117,17 @@ def on_message(client, userdata, msg):
                 # Publish to feedback topic (mqtt)
                 if operation_success:
                     print("Command successfully sent to",relay_board['name'],board_ip)
-                    topic_str= "homie/"+splitted_topic[1]+\
+                    topic_str= BASE_TOPIC+splitted_topic[1]+\
                         "/"+splitted_topic[2]+\
-                        "/estado"
+                        "/"+STATE_TOPIC_NAME
+                    if(MQTT_DEBUG):
+                        print("MQTT state reported: ")
+                        print("-- " + topic_str)
+                        print("  -- " + msg_str)
                     client.publish(topic_str, msg_str)
                 else:
                     print("Could not send command to",relay_board['name'],board_ip)
-            
+
 
 def exit_gracefully():
     print("EXITING GRACEFULLY...")
@@ -144,7 +152,7 @@ def load_inventory():
 def get_relay_topic(relay_board_name, relay_num):
     return BASE_TOPIC+ \
         relay_board_name+ \
-        "/"+BASE_RELAY_NAME+str(relay_num)
+        "/"+str(relay_num)
 
 def update_topics(reading, relay_board_name):
     # Reversing reading string
@@ -153,6 +161,7 @@ def update_topics(reading, relay_board_name):
     for position in range(8):
         client.loop(0.2)
         topic_str=get_relay_topic(relay_board_name, position+1)+"/"+STATE_TOPIC_NAME
+#        print("this should be topic_str: "+ topic_str)
         msg_str=""
         if str(reading[position]) == "1":
             msg_str=ON
@@ -164,7 +173,7 @@ def update_topics(reading, relay_board_name):
 
 def read_boards():
     global inventory
-    # Ask every relay board for its state  
+    # Ask every relay board for its state
     for relay_board in inventory['relay_boards']:
         board_ip=relay_board['ip']
         client.loop(0.1)
@@ -177,10 +186,11 @@ def read_boards():
                 reading = searched.group(0)
                 update_topics(reading, relay_board["name"])
 
-client = mqtt.Client(client_id = "hhc_n8i9op_gateway")
+client = mqtt.Client(client_id = MQTT_CLIENT_ID)
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("localhost")
+client.username_pw_set(username=MQTT_USER, password=MQTT_PASS)
+client.connect(MQTT_HOST)
 print("Starting HHC-8I8OP MQTT gateway")
 client.loop_start()
 # Polling  relay status and publishing its state (every X seconds)
@@ -194,8 +204,15 @@ try:
             client.loop(0.1)
             time.sleep(POLLING_WAIT/polling_divisor)
 
+except KeyboardInterrupt:
+    print("Killed by keyboard")
+
+except KeyError as e:
+    print("Config error, missing key: ", str(e))
 
 except Exception as e:
+    print("Finished with EXCEPTION:", str(e))
+
+finally:
     client.disconnect()
     client.loop_stop()
-    print("Finished with EXCEPTION:", str(e))

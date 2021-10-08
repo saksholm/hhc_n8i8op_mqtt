@@ -1,0 +1,6 @@
+mqtt:
+  host: 'localhost'
+  username: 'username'
+  password: 'password'
+  debug: False
+  client_id: "hhc_n8i8op_gateway"
