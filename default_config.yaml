@@ -1,0 +1,4 @@
+mqtt:
+  host: 'localhost'
+  username: 'username'
+  password: 'password'
