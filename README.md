@@ -7,3 +7,11 @@ https://es.aliexpress.com/item/4000120026245.html
 # modified version setup:
 - rename default_config.yaml to config.yaml and change values
 - rename default_inventory.yaml to inventory.yaml and config values
+
+
+### usage:
+- command topic:
+  - iot/relay_board_1/1/state/set -> "ON" or "OFF"
+
+- state topic:
+  - iot/relay_board_1/1/state -> "ON" or "OFF"
