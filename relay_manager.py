@@ -6,12 +6,13 @@
 import paho.mqtt.client as mqtt
 import time, re, socket, yaml, sys
 from _thread import start_new_thread
+from datetime import datetime
 
 config = yaml.safe_load(open("config.yaml"))
 
 POLLING_WAIT=5
 SOCKET_TIMEOUT= 10#seconds
-
+SILENT=False
 UDP_PORT=5000
 INVENTORY_FILE="./inventory.yaml"
 ON="ON"
@@ -29,6 +30,10 @@ MQTT_USER=config["mqtt"]["username"]
 MQTT_PASS=config["mqtt"]["password"]
 MQTT_DEBUG=config["mqtt"]["debug"]
 MQTT_CLIENT_ID=config["mqtt"]["client_id"]
+
+def isodate():
+    newdate = datetime.now()
+    return newdate.isoformat()
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -116,7 +121,8 @@ def on_message(client, userdata, msg):
                     send_ascii_cmd_checked(board_ip, ascii_cmd)
                 # Publish to feedback topic (mqtt)
                 if operation_success:
-                    print("Command successfully sent to",relay_board['name'],board_ip)
+                    if(SILENT == False):
+                        print("Command '"+ ascii_cmd+ "' successfully sent to",relay_board['name'],board_ip, isodate())
                     topic_str= BASE_TOPIC+splitted_topic[1]+\
                         "/"+splitted_topic[2]+\
                         "/"+STATE_TOPIC_NAME
