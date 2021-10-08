@@ -5,24 +5,24 @@ https://es.aliexpress.com/item/4000120026245.html
 
 
 # modified version setup:
-run 'python3 setup.py' or:
-- rename default_config.yaml to config.yaml
-- rename default_inventory.yaml to inventory.yaml
+run ``python3 setup.py`` or:
+- rename ``default_config.yaml`` to ``config.yaml``
+- rename ``default_inventory.yaml`` to ``inventory.yaml``
 
 change values of config and inventory files
 
 
 ## usage:
 
-start script: 'python3 relay_manager.py'
+start script: ``python3 relay_manager.py``
 
 
 
 #### command topic:
 set relay 1:
-- iot/relay_board_1/1/state/set -> "ON" or "OFF"
+- ``iot/relay_board_1/1/state/set`` -> ``ON`` or ``OFF``
 
 
 #### state topic:
 read relay 2:
-- iot/relay_board_1/2/state -> "ON" or "OFF"
+- ``iot/relay_board_1/2/state`` -> ``ON`` or ``OFF``
