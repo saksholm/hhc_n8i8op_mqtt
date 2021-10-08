@@ -32,8 +32,8 @@ MQTT_DEBUG=config["mqtt"]["debug"]
 MQTT_CLIENT_ID=config["mqtt"]["client_id"]
 
 def isodate():
-    newdate = datetime.now()
-    return newdate.isoformat()
+    newdate = datetime.utcnow()
+    return newdate.isoformat()+ "Z"
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
