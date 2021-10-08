@@ -8,7 +8,7 @@ import time, re, socket, yaml
 from _thread import start_new_thread
 
 POLLING_WAIT=5
-SOCKET_TIMEOUT= 3#seconds
+SOCKET_TIMEOUT= 10#seconds
 UDP_PORT=5000
 INVENTORY_FILE="./inventory.yaml"
 ON="ON"
@@ -26,8 +26,8 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     ################git pull
-    # ### 
-    ## Placa relés X ## 
+    # ###
+    ## Placa relés X ##
     ###################
     # Cada relé podrá operarse (placa 1, relé 1) con:
     # homie/placa_reles_1/rele_1/estado/set -> ("ON" o "OFF")
@@ -119,7 +119,7 @@ def on_message(client, userdata, msg):
                     client.publish(topic_str, msg_str)
                 else:
                     print("Could not send command to",relay_board['name'],board_ip)
-            
+
 
 def exit_gracefully():
     print("EXITING GRACEFULLY...")
@@ -164,7 +164,7 @@ def update_topics(reading, relay_board_name):
 
 def read_boards():
     global inventory
-    # Ask every relay board for its state  
+    # Ask every relay board for its state
     for relay_board in inventory['relay_boards']:
         board_ip=relay_board['ip']
         client.loop(0.1)
