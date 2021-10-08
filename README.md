@@ -12,7 +12,11 @@ run 'python3 setup.py' or:
 change values of config and inventory files
 
 
-### usage:
+## usage:
+
+start script: 'python3 relay_manager.py'
+
+
 
 #### command topic:
 set relay 1:
