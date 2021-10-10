@@ -5,6 +5,7 @@ https://es.aliexpress.com/item/4000120026245.html
 
 
 # modified version setup:
+First clone this repo.
 run ``python3 setup.py`` or:
 - rename ``default_config.yaml`` to ``config.yaml``
 - rename ``default_inventory.yaml`` to ``inventory.yaml``
@@ -26,3 +27,13 @@ set relay 1:
 #### state topic:
 read relay 2:
 - ``iot/relay_board_1/2/state`` -> ``ON`` or ``OFF``
+
+
+# Run script on PM2 process manager
+
+- Simply install first PM2
+- ``cd hhc_n8i8op_mqtt``
+- run ``pm2 start relay_manager.py --name relay_manager --interpreter python3``
+- When you tested that everything is running smoothly. Enter command: ``pm2 startup`` and follow instruction. Your script is running now on your server properly after restarts.
+
+Side note! When you update pm2 or python you may need to run ``pm2 startup`` again.
