@@ -34,6 +34,6 @@ read relay 2:
 - Simply install first PM2
 - ``cd hhc_n8i8op_mqtt``
 - run ``pm2 start relay_manager.py --name relay_manager --interpreter python3``
-- When you tested that everything is running smoothly. Enter command: ``pm2 startup`` and follow instruction. Your script is running now on your server properly after restarts.
+- When you tested that everything is running smoothly. Enter command: ``pm2 startup`` and follow instructions. Script is running now on your server properly after server restarts or script fails.
 
 Side note! When you update pm2 or python you may need to run ``pm2 startup`` again.
