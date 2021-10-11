@@ -1,10 +1,12 @@
 # hhc_n8i8op_mqtt
-HHC-N8I8OP MQTT gateway. Publish your relay board as MQTT topic tree. Can support several boards at same time. Connects to MQTT broker at localhost, default server port.
-You have to set your HHC-N8I8OP as UDP service, port 5000.
+HHC-N8I8OP MQTT gateway. Publish your relay board as MQTT topic tree. Can support several boards at same time. Connects to MQTT broker at localhost, default server port. (edit: this modified version supports to configure MQTT host, user and password to connect your MQTT broker.)
+
+You have to set your HHC-N8I8OP as UDP service, port 5000. Change ``INPUT_MODE`` to ``Trigger`` to get local inputs control relays.
 https://es.aliexpress.com/item/4000120026245.html
 
 
 # modified version setup:
+
 First clone this repo.
 run ``python3 setup.py`` or:
 - rename ``default_config.yaml`` to ``config.yaml``
