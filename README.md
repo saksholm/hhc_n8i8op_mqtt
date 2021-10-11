@@ -37,3 +37,29 @@ read relay 2:
 - When you tested that everything is running smoothly. Enter command: ``pm2 startup`` and follow instructions. Script is running now on your server properly after server restarts or script fails.
 
 Side note! When you update pm2 or python you may need to run ``pm2 startup`` again.
+
+
+## Home Assistant setup
+
+You need to configure mqtt switches like this:
+```
+- platform: mqtt
+  name: "Relay Board - Relay #1"
+  command_topic: "iot/relay_board_1/1/state/set"
+  state_topic: "iot/relay_board_1/1/state"
+  payload_on: "ON"
+  payload_off: "OFF"
+  qos: 1
+  retain: false
+```
+
+Where ``relay_board_1`` in topic's is same as relay board name in ``inventory.yaml``
+
+
+## Local inputs
+
+- If you want control relays locally via inputs you have to configure relays ``INPUT_MODE`` from ``Ordinary`` to ``Trigger``. This will happen in config app and you may have windows pc. I don't have tested on emulators/virtual machine.
+- Loop wire to ``COM`` and ``GND``
+- When +5v to IN(x) connections works. Use momentary switches to control relays locally.
+- ``IN9`` is all ``ON``.
+- ``IN10`` is all ``OFF``.
