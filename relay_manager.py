@@ -198,7 +198,7 @@ client.on_message = on_message
 client.username_pw_set(username=MQTT_USER, password=MQTT_PASS)
 client.connect(MQTT_HOST)
 print("Starting HHC-8I8OP MQTT gateway")
-client.loop_start()
+client.loop_forever()
 # Polling  relay status and publishing its state (every X seconds)
 try:
     time.sleep(5)
