@@ -11,7 +11,7 @@ from datetime import datetime
 config = yaml.safe_load(open("config.yaml"))
 
 POLLING_WAIT=5
-SOCKET_TIMEOUT= 10#seconds
+SOCKET_TIMEOUT= 3#seconds
 SILENT=False
 UDP_PORT=5000
 INVENTORY_FILE="./inventory.yaml"
